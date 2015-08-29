@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <script src="bower_components/fetch/fetch.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <script>
+      var ami = new AMI('http://localhost:10000/call');
+      ami.call('SIP/1000', 'default', '1000', '')
+      .then(function (response) {
+        return response.text();
+      }).then(function (body) {
+        document.body.innerHTML = body;
+      });
+    </script>
+  </body>
+</html>
