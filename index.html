@@ -4,13 +4,15 @@
   </head>
   <body>
     <script>
-      var ami = new AMI('http://localhost:10000/call');
+      var ami = new AMI('http://localhost:10000');
+      /*
       ami.call('SIP/1000', 'default', '1000', '')
         .then(function (response) {
           return response.text();
         }).then(function (body) {
           document.body.innerHTML = body;
         });
+      */
     </script>
   </body>
 </html>
