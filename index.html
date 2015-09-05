@@ -13,6 +13,19 @@
           document.body.innerHTML = body;
         });
       */
+      var handler = function (evt) {
+        console.log(evt);
+      };
+
+      ami.subscribe({
+        agent: 'SIP/1000',
+        onAgentConnect: handler,
+        onAgentCalled: handler,
+        onAgentComplete: handler,
+        onAgentRingNoAnswer: handler,
+        onAgentDump: handler
+      });
+      
     </script>
   </body>
 </html>

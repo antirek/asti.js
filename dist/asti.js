@@ -332,7 +332,7 @@
 
 // AMI for browser
 
-var AMI = function (url) {
+var AMI = function (url, options) {
 
   var socket;
 
@@ -344,8 +344,8 @@ var AMI = function (url) {
   };
 
   var checkSocket = function () {
-    if (!socket) {
-      throw new Error('No socket.io conection');
+    if (!socket.connected) {
+      throw new Error('No socket.io connection');
     };
   };
 
@@ -353,21 +353,17 @@ var AMI = function (url) {
     addScript(function(){
       socket = io(url);
     });
-  };
+  }();
 
   var subscribe = function (object) {
     checkSocket();
-    socket.emit('subscribe', object);
+    socket.emit('subscribe', {agent: object.agent});
 
-    var handler = function (data) {
-      console.log(data);
-    };
-
-    socket.on('agentcalled', handler);
-    socket.on('agentconnect', handler);
-    socket.on('agentcomplete', handler);
-    socket.on('agentdump', handler);
-    socket.on('agentringnoanswer', handler);
+    socket.on('agentcalled', object.onAgentCalled || function () {});
+    socket.on('agentconnect', object.onAgentConnect || function () {});
+    socket.on('agentcomplete', object.onAgentComplete || function () {});
+    socket.on('agentdump', object.onAgentDump || function () {});
+    socket.on('agentringnoanswer', object.onAgentRingNoAnswer || function () {});
   };
 
   var unsibscribe = function (object) {
