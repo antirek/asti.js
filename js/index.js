@@ -1,7 +1,5 @@
 
-// AMI for browser
-
-var AMI = function (url, options) {
+var ASTI = function (url) {
 
   var socket;
 
@@ -19,7 +17,7 @@ var AMI = function (url, options) {
   };
 
   var connect = function () {
-    addScript(function(){
+    addScript(function () {
       socket = io(url);
     });
   }();
@@ -28,11 +26,14 @@ var AMI = function (url, options) {
     checkSocket();
     socket.emit('subscribe', {agent: object.agent});
 
-    socket.on('agentcalled', object.onAgentCalled || function () {});
+    socket.on('agentcalled', object.onAgentCalled || function () {});    
     socket.on('agentconnect', object.onAgentConnect || function () {});
     socket.on('agentcomplete', object.onAgentComplete || function () {});
     socket.on('agentdump', object.onAgentDump || function () {});
     socket.on('agentringnoanswer', object.onAgentRingNoAnswer || function () {});
+
+    socket.on('agentlogin', object.onAgentLogin || function () {});
+    socket.on('agentlogoff', object.onAgentLogoff || function () {});
   };
 
   var unsibscribe = function (object) {
@@ -57,8 +58,7 @@ var AMI = function (url, options) {
   };
 
   return {
-    call: call,
-    connect: connect,
+    call: call,    
     subscribe: subscribe,
     unsibscribe: unsibscribe
   };
