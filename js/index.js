@@ -11,20 +11,21 @@ var ASTI = function (url) {
   };
 
   var checkSocket = function () {
-    if (!socket.connected) {
+    if (!socket) {
       throw new Error('No socket.io connection');
     };
   };
 
-  var connect = function () {
+  var connect = function (callback) {
     addScript(function () {
       socket = io(url);
+      callback();
     });
-  }();
+  };
 
-  var subscribe = function (object) {
+  var subscribeAgentEvents = function (object) {
     checkSocket();
-    socket.emit('subscribe', {agent: object.agent});
+    socket.emit('subscribeAgentEvents', {agent: object.agent});
 
     socket.on('agentcalled', object.onAgentCalled || function () {});    
     socket.on('agentconnect', object.onAgentConnect || function () {});
@@ -36,9 +37,9 @@ var ASTI = function (url) {
     socket.on('agentlogoff', object.onAgentLogoff || function () {});
   };
 
-  var unsibscribe = function (object) {
+  var unsubscribeAgentEvents = function (object) {
     checkSocket();
-    socket.emit('unsibscribe', object);
+    socket.emit('unsubscribeAgentEvents', object);
   };
 
   var call = function (channel, context, exten, variable) {
@@ -59,8 +60,9 @@ var ASTI = function (url) {
 
   return {
     call: call,    
-    subscribe: subscribe,
-    unsibscribe: unsibscribe
+    subscribeAgentEvents: subscribeAgentEvents,
+    unsubscribeAgentEvents: unsubscribeAgentEvents,
+    connect: connect
   };
 
 };

@@ -4,9 +4,9 @@
   </head>
   <body>
     <script>
-      var ami = new AMI('http://localhost:10000');
+      var asti = new ASTI('http://localhost:10000');
       /*
-      ami.call('SIP/1000', 'default', '1000', '')
+      asti.call('SIP/1000', 'default', '1000', '')
         .then(function (response) {
           return response.text();
         }).then(function (body) {
@@ -17,15 +17,17 @@
         console.log(evt);
       };
 
-      ami.subscribe({
-        agent: 'SIP/1000',
-        onAgentConnect: handler,
-        onAgentCalled: handler,
-        onAgentComplete: handler,
-        onAgentRingNoAnswer: handler,
-        onAgentDump: handler,
-        onAgentLogin: handler,
-        onAgentLogoff: handler
+      asti.connect(function () {
+        asti.subscribeAgentEvents({
+          agent: 'SIP/S627dc26',
+          onAgentConnect: handler,
+          onAgentCalled: handler,
+          onAgentComplete: handler,
+          onAgentRingNoAnswer: handler,
+          onAgentDump: handler,
+          onAgentLogin: handler,
+          onAgentLogoff: handler
+        });
       });
 
     </script>
