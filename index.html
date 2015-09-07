@@ -19,7 +19,7 @@
 
       asti.connect(function () {
         asti.subscribeAgentEvents({
-          agent: 'SIP/S627dc26',
+          agent: 'SIP/S2a8a6a9',
           onAgentConnect: handler,
           onAgentCalled: handler,
           onAgentComplete: handler,
@@ -28,6 +28,19 @@
           onAgentLogin: handler,
           onAgentLogoff: handler
         });
+
+        asti.subscribeAgentEvents({
+          agent: 'SIP/Se3e427e',
+          onAgentConnect: handler,
+          onAgentCalled: handler,
+          onAgentComplete: handler,
+          onAgentRingNoAnswer: handler,
+          onAgentDump: handler,
+          onAgentLogin: handler,
+          onAgentLogoff: handler
+        });
+
+        
       });
 
     </script>

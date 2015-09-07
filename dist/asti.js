@@ -358,14 +358,16 @@ var ASTI = function (url) {
     checkSocket();
     socket.emit('subscribeAgentEvents', {agent: object.agent});
 
-    socket.on('agentcalled', object.onAgentCalled || function () {});    
-    socket.on('agentconnect', object.onAgentConnect || function () {});
-    socket.on('agentcomplete', object.onAgentComplete || function () {});
-    socket.on('agentdump', object.onAgentDump || function () {});
-    socket.on('agentringnoanswer', object.onAgentRingNoAnswer || function () {});
+    var handler = function (data, cb) {
+      if (data && data.agent && data.agent == object.agent) {
+        cb(data.event);
+      };
+    };
 
-    socket.on('agentlogin', object.onAgentLogin || function () {});
-    socket.on('agentlogoff', object.onAgentLogoff || function () {});
+    socket.on('agentcalled', function (evt) { handler(evt, object.onAgentCalled || function () {})});
+    socket.on('agentconnect', function (evt) { handler(evt, object.onAgentConnect || function () {})});
+    socket.on('agentcomplete', function (evt) { handler(evt, object.onAgentComplete || function () {})});
+    socket.on('agentringnoanswer', function (evt) { handler(evt, object.onAgentRingNoAnswer || function () {})});
   };
 
   var unsubscribeAgentEvents = function (object) {
