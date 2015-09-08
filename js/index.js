@@ -25,7 +25,7 @@ var ASTI = function (url) {
 
   var subscribeAgentEvents = function (object) {
     checkSocket();
-    socket.emit('subscribeAgentEvents', {agent: object.agent});
+    socket.emit('agent:subscribe', {agent: object.agent});
 
     var handler = function (data, cb) {
       if (data && data.agent && data.agent == object.agent) {
@@ -41,7 +41,7 @@ var ASTI = function (url) {
 
   var unsubscribeAgentEvents = function (object) {
     checkSocket();
-    socket.emit('unsubscribeAgentEvents', object);
+    socket.emit('agent:unsubscribe', object);
   };
 
   var call = function (channel, context, exten, variable) {
