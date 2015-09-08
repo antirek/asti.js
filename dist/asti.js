@@ -391,10 +391,15 @@ var ASTI = function (url) {
     return fetch(r);
   };
 
+
+  var agent = {
+    subscribe: subscribeAgentEvents,
+    unsubscribe: unsubscribeAgentEvents,
+  };
+
   return {
-    call: call,    
-    subscribeAgentEvents: subscribeAgentEvents,
-    unsubscribeAgentEvents: unsubscribeAgentEvents,
+    call: call,
+    agent: agent,
     connect: connect
   };
 

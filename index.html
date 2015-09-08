@@ -1,5 +1,5 @@
 <html>
-  <head>    
+  <head>
     <script src="dist/asti.js"></script>
   </head>
   <body>
@@ -18,29 +18,21 @@
       };
 
       asti.connect(function () {
-        asti.subscribeAgentEvents({
-          agent: 'SIP/S2a8a6a9',
+        asti.agent.subscribe({
+          agent: 'SIP/6000',
           onAgentConnect: handler,
           onAgentCalled: handler,
           onAgentComplete: handler,
-          onAgentRingNoAnswer: handler,
-          onAgentDump: handler,
-          onAgentLogin: handler,
-          onAgentLogoff: handler
+          onAgentRingNoAnswer: handler
         });
 
-        asti.subscribeAgentEvents({
-          agent: 'SIP/Se3e427e',
+        asti.agent.subscribe({
+          agent: 'SIP/6050',
           onAgentConnect: handler,
           onAgentCalled: handler,
           onAgentComplete: handler,
-          onAgentRingNoAnswer: handler,
-          onAgentDump: handler,
-          onAgentLogin: handler,
-          onAgentLogoff: handler
+          onAgentRingNoAnswer: handler
         });
-
-        
       });
 
     </script>
