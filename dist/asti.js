@@ -397,10 +397,26 @@ var ASTI = function (url) {
     unsubscribe: unsubscribeAgentEvents,
   };
 
+  var queueList = function (callback) {
+    socket.on('queue:list', callback);
+    socket.emit('queue:list');
+  };
+
+  var queueMembers = function (data, callback) {
+    socket.on('queue:members', callback);
+    socket.emit('queue:members', data);
+  };
+
+  var queue = {
+    list: queueList,
+    members: queueMembers
+  };
+
   return {
     call: call,
     agent: agent,
-    connect: connect
+    connect: connect,
+    queue: queue
   };
 
 };

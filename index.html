@@ -33,6 +33,20 @@
           onAgentComplete: handler,
           onAgentRingNoAnswer: handler
         });
+
+        asti.queue.list(function (data) {
+          console.log('queue:list', data);
+          data.forEach(function (queue) {
+            console.log('queue:', queue.queue);
+
+            asti.queue.members({queue: queue.queue}, function (data) {
+              data.forEach(function (member) {
+                console.log('-- member:', member.location);
+              })
+            })
+          })
+        });
+
       });
 
     </script>
