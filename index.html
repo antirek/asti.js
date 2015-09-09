@@ -35,22 +35,29 @@
           onAgentRingNoAnswer: handler
         });
 
-        asti.queue.list()
-        .then(function (data) {
-          console.log('queue:list', data);
-          
-          data.forEach(function (queue) {
+        return asti.queue.list();
+      })
+      .then(function (queueList) {
+        console.log('queue:list', queueList);
+        
+        queueList.forEach(function (queue) {
             console.log('queue:', queue.queue);
 
-            asti.queue.members()
-            .then(function (data) {
-              data.forEach(function (member) {
-                console.log('-- member:', member.location);
-              })
-            })
-          })
-        });
+            asti.queue.members({queue: queue.queue})
+              .then(function (membersList) {
+                console.log(membersList);
+                if (membersList.length > 0) {
+                  membersList.forEach(function (member) {
+                    console.log('-- member:', member.location);
+                  });
+                }
+              });
 
+          })        
+
+      })
+      .catch(function (err) {
+        console.log(err);
       });
 
     </script>

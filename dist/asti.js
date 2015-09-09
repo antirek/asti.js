@@ -408,15 +408,18 @@ var ASTI = function (url) {
         resolve(data);
       });
       socket.emit('queue:list');
-      setTimeout(function () { reject("timeout exceed")}, 10000);
+      setTimeout(function () { reject("queueList timeout exceed")}, 10000);
     });
   };
 
   var queueMembers = function (data) {
     return new Promise(function (resolve, reject) {
-      socket.on('queue:members', resolve);
+      socket.on('queue:members', function (data) {
+        console.log('socket on', data);
+        resolve(data);
+      });
       socket.emit('queue:members', data);
-      setTimeout(function() { reject ("timeout exceed")}, 10000);
+      setTimeout(function() { reject ("queueMembers timeout exceed")}, 10000);
     });
   };
 
