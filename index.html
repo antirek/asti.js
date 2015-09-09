@@ -17,7 +17,8 @@
         console.log(evt);
       };
 
-      asti.connect(function () {
+      asti.connect()
+      .then(function () {
         asti.agent.subscribe({
           agent: 'SIP/6000',
           onAgentConnect: handler,
@@ -34,12 +35,15 @@
           onAgentRingNoAnswer: handler
         });
 
-        asti.queue.list(function (data) {
+        asti.queue.list()
+        .then(function (data) {
           console.log('queue:list', data);
+          
           data.forEach(function (queue) {
             console.log('queue:', queue.queue);
 
-            asti.queue.members({queue: queue.queue}, function (data) {
+            asti.queue.members()
+            .then(function (data) {
               data.forEach(function (member) {
                 console.log('-- member:', member.location);
               })

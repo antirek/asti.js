@@ -330,6 +330,9 @@
 })();
 
 
+//required Promise support
+
+
 var ASTI = function (url) {
 
   var socket;
@@ -347,10 +350,12 @@ var ASTI = function (url) {
     };
   };
 
-  var connect = function (callback) {
-    addScript(function () {
-      socket = io(url);
-      callback();
+  var connect = function () {
+    return new Promise(function (resolve, reject) {
+      addScript(function () {
+        socket = io(url);
+        resolve();
+      });
     });
   };
 
@@ -397,14 +402,22 @@ var ASTI = function (url) {
     unsubscribe: unsubscribeAgentEvents,
   };
 
-  var queueList = function (callback) {
-    socket.on('queue:list', callback);
-    socket.emit('queue:list');
+  var queueList = function () {
+    return new Promise(function (resolve, reject) {
+      socket.on('queue:list', function (data) {
+        resolve(data);
+      });
+      socket.emit('queue:list');
+      setTimeout(function () { reject("timeout exceed")}, 10000);
+    });
   };
 
-  var queueMembers = function (data, callback) {
-    socket.on('queue:members', callback);
-    socket.emit('queue:members', data);
+  var queueMembers = function (data) {
+    return new Promise(function (resolve, reject) {
+      socket.on('queue:members', resolve);
+      socket.emit('queue:members', data);
+      setTimeout(function() { reject ("timeout exceed")}, 10000);
+    });
   };
 
   var queue = {
