@@ -126,7 +126,7 @@ asti.queue.list()
 
 `````
 
-attention: member properties may be different by Asterisk version
+attention: queue properties may be different by Asterisk version
 
 
 

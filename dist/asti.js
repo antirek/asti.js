@@ -332,11 +332,11 @@
 
 //required Promise support
 
-
 var ASTI = function (object) {
 
   var socket;
-  var url = object.url || throw new Error('no url in ASTI params');
+  var url = object.url || null;
+  if (!url) throw new Error('no url in ASTI params');
 
   var addScript = function (callback) {
     var script = document.createElement('script');
@@ -381,20 +381,33 @@ var ASTI = function (object) {
     socket.emit('agent:unsubscribe', object);
   };
 
-  var call = function (channel, context, exten, variable) {
-    var r = [
-      url,
-      '/call',
-      '?',
-      'channel=' + channel,
-      '&',
-      'context=' + context,
-      '&',
-      'exten=' + exten,
-      '&',
-      'variable=' + variable
-    ].join('');
-    return fetch(r);
+  var call = function (params) {
+    var prepare = function (options) {
+      return new Promise(function (resolve, reject) {
+
+      if (!options.channel) reject(new Error('no channel'));
+      if (!options.context) reject(new Error('no context'));
+      if (!options.exten) reject(new Error('no exten'));
+      if (!options.variable) options.variable = '';
+
+      var r = [
+        url,
+        '/call',
+        '?',
+        'channel=' + options.channel,
+        '&',
+        'context=' + options.context,
+        '&',
+        'exten=' + options.exten,
+        '&',
+        'variable=' + options.variable
+        ].join('');
+
+        resolve(r);
+      });
+    };
+
+    return prepare(params).then(fetch);
   };
 
 
