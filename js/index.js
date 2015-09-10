@@ -71,23 +71,44 @@ var ASTI = function (url) {
     unsubscribe: unsubscribeAgentEvents,
   };
 
-  var queueList = function () {
+  var queueList = function (request) {
+    if (!request) {var request = {};}
+    request.actionid = actionid();
     return new Promise(function (resolve, reject) {
-      socket.on('queue:list', function (data) {
-        resolve(data);
+      var listener = new eventListener(request.actionid, function (response) {
+        socket.removeEventListener('queue:list', listener);
+        resolve(response.data);
       });
-      socket.emit('queue:list');
+      socket.on('queue:list', listener);
+      socket.emit('queue:list', request);
       setTimeout(function () { reject("queueList timeout exceed")}, 10000);
     });
   };
 
-  var queueMembers = function (data) {
+  var actionid = function () {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (var i = 0; i < 10; i++)
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+      return text;
+  };
+
+  var eventListener = function (actionid, callback) {
+    return function (response) {
+      if (response.actionid == actionid) {callback(response);}
+    }
+  };
+
+  var queueMembers = function (request) {
+    if (!request) {var request = {};}
+    request.actionid = actionid();
     return new Promise(function (resolve, reject) {
-      socket.on('queue:members', function (data) {
-        console.log('socket on', data);
-        resolve(data);
+      var listener = new eventListener(request.actionid, function (response) {
+        socket.removeEventListener('queue:members', listener);
+        resolve(response.data);
       });
-      socket.emit('queue:members', data);
+      socket.on('queue:members', listener);
+      socket.emit('queue:members', request);
       setTimeout(function() { reject ("queueMembers timeout exceed")}, 10000);
     });
   };
