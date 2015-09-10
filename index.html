@@ -4,7 +4,7 @@
   </head>
   <body>
     <script>
-      var asti = new ASTI('http://localhost:10000');
+      var asti = new ASTI({url:'http://localhost:10000'});
       /*
       asti.call('SIP/1000', 'default', '1000', '')
         .then(function (response) {
@@ -38,14 +38,14 @@
         return asti.queue.list();
       })
       .then(function (queueList) {
-        console.log('queue:list', queueList);
+        //console.log('queue:list', queueList);
         
         queueList.forEach(function (queue) {
             console.log('queue:', queue.queue);
 
             asti.queue.members({queue: queue.queue})
               .then(function (membersList) {
-                console.log(membersList);
+                //console.log(membersList);
                 if (membersList.length > 0) {
                   membersList.forEach(function (member) {
                     console.log('-- member:', member.location);

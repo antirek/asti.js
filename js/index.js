@@ -2,9 +2,10 @@
 //required Promise support
 
 
-var ASTI = function (url) {
+var ASTI = function (object) {
 
   var socket;
+  var url = object.url || throw new Error('no url in ASTI params');
 
   var addScript = function (callback) {
     var script = document.createElement('script');
