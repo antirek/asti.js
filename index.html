@@ -6,7 +6,7 @@
     <script>
       var asti = new ASTI({url:'http://localhost:10000'});
       /*
-      asti.call('SIP/1000', 'default', '1000', '')
+      asti.call({channel: 'SIP/1000', context: 'default', exten: '1000', variable: ''})
         .then(function (response) {
           return response.text();
         }).then(function (body) {
@@ -19,7 +19,7 @@
 
       asti.connect()
       .then(function () {
-        
+
         asti.agent.subscribe({
           agent: 'SIP/6000',
           onAgentConnect: handler,
@@ -54,7 +54,7 @@
                 }
               });
 
-          })        
+          });
 
       })
       .catch(function (err) {

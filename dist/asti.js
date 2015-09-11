@@ -360,6 +360,7 @@ var ASTI = function (object) {
     });
   };
 
+
   var subscribeAgentEvents = function (object) {
     checkSocket();
     socket.emit('agent:subscribe', {agent: object.agent});
@@ -416,19 +417,8 @@ var ASTI = function (object) {
     unsubscribe: unsubscribeAgentEvents,
   };
 
-  var queueList = function (request) {
-    if (!request) {var request = {};}
-    request.actionid = actionid();
-    return new Promise(function (resolve, reject) {
-      var listener = new eventListener(request.actionid, function (response) {
-        socket.removeEventListener('queue:list', listener);
-        resolve(response.data);
-      });
-      socket.on('queue:list', listener);
-      socket.emit('queue:list', request);
-      setTimeout(function () { reject("queueList timeout exceed")}, 10000);
-    });
-  };
+  
+
 
   var actionid = function () {
       var text = "";
@@ -444,18 +434,26 @@ var ASTI = function (object) {
     }
   };
 
-  var queueMembers = function (request) {
+  var pass = function (socket, request, evt) {
     if (!request) {var request = {};}
     request.actionid = actionid();
     return new Promise(function (resolve, reject) {
       var listener = new eventListener(request.actionid, function (response) {
-        socket.removeEventListener('queue:members', listener);
+        socket.removeEventListener(evt, listener);
         resolve(response.data);
       });
-      socket.on('queue:members', listener);
-      socket.emit('queue:members', request);
-      setTimeout(function() { reject ("queueMembers timeout exceed")}, 10000);
+      socket.on(evt, listener);
+      socket.emit(evt, request);
+      setTimeout(function() { reject (evt + " timeout exceed")}, 10000);
     });
+  };
+
+  var queueList = function (request) {    
+    return pass(socket, request, 'queue:list');
+  };
+
+  var queueMembers = function (request) {
+    return pass(socket, request, 'queue:members');
   };
 
   var queue = {
@@ -464,9 +462,9 @@ var ASTI = function (object) {
   };
 
   return {
+    connect: connect,
     call: call,
     agent: agent,
-    connect: connect,
     queue: queue
   };
 
