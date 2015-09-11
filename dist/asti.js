@@ -371,10 +371,10 @@ var ASTI = function (object) {
       };
     };
 
-    socket.on('agentcalled', function (evt) { handler(evt, object.onAgentCalled || function () {})});
-    socket.on('agentconnect', function (evt) { handler(evt, object.onAgentConnect || function () {})});
-    socket.on('agentcomplete', function (evt) { handler(evt, object.onAgentComplete || function () {})});
-    socket.on('agentringnoanswer', function (evt) { handler(evt, object.onAgentRingNoAnswer || function () {})});
+    socket.on('agentcalled', function (evt) { handler(evt, object.onAgentCalled || function () {}) });
+    socket.on('agentconnect', function (evt) { handler(evt, object.onAgentConnect || function () {}) });
+    socket.on('agentcomplete', function (evt) { handler(evt, object.onAgentComplete || function () {}) });
+    socket.on('agentringnoanswer', function (evt) { handler(evt, object.onAgentRingNoAnswer || function () {}) });
   };
 
   var unsubscribeAgentEvents = function (object) {
