@@ -17,11 +17,12 @@
         console.log(evt);
       };
 
-      asti.connect()
+      asti.setIdentity({identity: 'Vasya'})
+      .connect()
       .then(function () {
 
         asti.agent.subscribe({
-          agent: 'SIP/6000',
+          agent: 'SIP/100',
           onAgentConnect: handler,
           onAgentCalled: handler,
           onAgentComplete: handler,
@@ -29,7 +30,7 @@
         });
 
         asti.agent.subscribe({
-          agent: 'SIP/6050',
+          agent: 'SIP/101',
           onAgentConnect: handler,
           onAgentCalled: handler,
           onAgentComplete: handler,

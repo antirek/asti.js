@@ -7,6 +7,9 @@ var ASTI = function (object) {
 
   var socket;
   var url = object.url || null;
+  var identity = null;
+  var sessionid = null;
+
   if (!url) throw new Error('no url in ASTI params');
 
   var addScript = function (callback) {
@@ -24,8 +27,11 @@ var ASTI = function (object) {
 
   var connect = function () {
     return new Promise(function (resolve, reject) {
+      if (!identity) { reject('no identity'); }
       addScript(function () {
         socket = io(url);
+        sessionid = 'session-' + actionid();
+        socket.emit('identity', {identity: identity, sessionid: sessionid});
         resolve();
       });
     });
@@ -132,7 +138,13 @@ var ASTI = function (object) {
     members: queueMembers
   };
 
+  var setIdentity = function (object) {
+    identity = object.identity;
+    return this;
+  };
+
   return {
+    setIdentity: setIdentity,
     connect: connect,
     call: call,
     agent: agent,
