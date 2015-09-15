@@ -18,9 +18,16 @@
             context: 'outbound2',
             exten: '6000',
             async: true
+          }, {
+            onAnswer1Side: function (res) {
+              alert('1 answer');
+            },
+            onAnswer2Side: function (res) {
+              alert('2 answer');
+            }
           })
-          .then(function (response) {
-            document.body.innerHTML = response.text();
+          .then(function (response) {            
+            document.body.innerHTML = JSON.stringify(response);
           });
       })
       .catch(function (err) {

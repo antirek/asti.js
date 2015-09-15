@@ -65,11 +65,35 @@ var ASTI = function (object) {
     socket.emit('agent:unsubscribe', object);
   };
 
-  var call = function (request) {
+  var call = function (request, handlers) {
     checkSocket();
     if (!request) {var request = {};}
     request.actionid = actionid();
-    socket.emit('call', request);
+    
+    var listener1 = new eventListener(request.actionid, function (response) {
+      socket.removeEventListener('answer1', listener1);
+      handlers.onAnswer1Side(response.data);
+    });
+    socket.on('answer1', listener1);
+
+    var listener2 = new eventListener(request.actionid, function (response) {
+      socket.removeEventListener('answer2', listener2);
+      handlers.onAnswer2Side(response.data);
+    });
+    socket.on('answer2', listener2);
+
+    //@todo - add timeout remove listeners
+
+    return new Promise(function (resolve, reject) {
+      var listener = new eventListener(request.actionid, function (response) {        
+        socket.removeEventListener('call', listener);
+        resolve(response.data);
+      });
+      socket.on('call', listener);
+      socket.emit('call', request);
+      setTimeout(function() { reject ('call' + " timeout exceed")}, 10000);
+    });
+
   };
 
   var agent = {
