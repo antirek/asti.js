@@ -5,14 +5,7 @@
   <body>
     <script>
       var asti = new ASTI({url:'http://localhost:10000'});
-      /*
-      asti.call({channel: 'SIP/1000', context: 'default', exten: '89135292926', variable: ''})
-        .then(function (response) {
-          return response.text();
-        }).then(function (body) {
-          document.body.innerHTML = body;
-        });
-      */
+      
       var handler = function (evt) {
         console.log(evt);
       };

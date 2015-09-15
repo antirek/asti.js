@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <script src="dist/asti.js"></script>
+  </head>
+  <body>
+    <script>
+      var asti = new ASTI({url:'http://localhost:10000'});
+      
+      var handler = function (evt) {
+        console.log(evt);
+      };
+
+      asti.setIdentity({identity: 'Vasya'})
+      .connect()
+      .then(function () {
+        return asti.call({
+            channel: 'Local/6050@outbound1', 
+            context: 'outbound2',
+            exten: '6000',
+            async: true
+          })
+          .then(function (response) {
+            document.body.innerHTML = response.text();
+          });
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+
+    </script>
+  </body>
+</html>
