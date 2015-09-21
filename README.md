@@ -78,13 +78,15 @@ asti.setIdentity({identity: 'vasya'}).connect()
 ### asti.agent
 
 
-#### asti.agent.subscribe(params)
+#### asti.agent.subscribe(params, handlers)
 
 Subscribe on events by agent will be catched and pass to listeners
 
 params: 
 
 agent - agent of asterisk queues
+
+handlers:
 
 onAgentCalled - callback on AgentCalled
 
@@ -104,7 +106,8 @@ var handler = function (evt) {
 };
 
 asti.agent.subscribe({
-    agent: 'SIP/1000',
+    agent: 'SIP/1000'
+}, {
     onAgentCalled: handler,
     onAgentCalled: handler,
     onAgentComplete: handler,

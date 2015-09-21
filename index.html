@@ -15,7 +15,8 @@
       .then(function () {
 
         asti.agent.subscribe({
-          agent: 'SIP/100',
+          agent: 'SIP/100'
+        }, {
           onAgentConnect: handler,
           onAgentCalled: handler,
           onAgentComplete: handler,
@@ -23,7 +24,8 @@
         });
 
         asti.agent.subscribe({
-          agent: 'SIP/101',
+          agent: 'SIP/101'
+        }, {
           onAgentConnect: handler,
           onAgentCalled: handler,
           onAgentComplete: handler,

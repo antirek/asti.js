@@ -1,7 +1,7 @@
 
 //required Promise support
 
-//version 0.0.6
+//version 0.0.7
 
 var ASTI = function (object) {
 
@@ -59,20 +59,30 @@ var ASTI = function (object) {
   };
 
 
-  var subscribeAgentEvents = function (object) {
+  var subscribeAgentEvents = function (object, handlers) {
     checkSocket();
     socket.emit('agent:subscribe', {agent: object.agent});
 
-    var handler = function (data, cb) {
-      if (data && data.agent && data.agent == object.agent) {
-        cb(data.event);
+    if (handlers) {
+      var handler = function (data, cb) {
+        if (data && data.agent && data.agent == object.agent) {
+          cb(data.event);
+        };
       };
-    };
 
-    socket.on('agentcalled', function (evt) { handler(evt, object.onAgentCalled || function () {}) });
-    socket.on('agentconnect', function (evt) { handler(evt, object.onAgentConnect || function () {}) });
-    socket.on('agentcomplete', function (evt) { handler(evt, object.onAgentComplete || function () {}) });
-    socket.on('agentringnoanswer', function (evt) { handler(evt, object.onAgentRingNoAnswer || function () {}) });
+      if (handlers.onAgentCalled) { 
+        socket.on('agentcalled', function (evt) { handler(evt, handlers.onAgentCalled) });
+      }
+      if (handlers.onAgentConnect) {
+        socket.on('agentconnect', function (evt) { handler(evt, handlers.onAgentConnect) });
+      }
+      if (handlers.onAgentComplete) {
+        socket.on('agentcomplete', function (evt) { handler(evt, handlers.onAgentComplete) });
+      }
+      if (handlers.onAgentRingNoAnswer) {
+        socket.on('agentringnoanswer', function (evt) { handler(evt, handlers.onAgentRingNoAnswer) });
+      }      
+    }
   };
 
   var unsubscribeAgentEvents = function (object) {
@@ -87,7 +97,7 @@ var ASTI = function (object) {
 
     var listenerOnAnswer1SideRemoved = true, listenerOnAnswer2SideRemoved = true, listener1, listener2;
 
-    if (handlers.onAnswer1Side) {
+    if (handlers && handlers.onAnswer1Side) {
       listener1 = new eventListener(request.actionid, function (response) {
         socket.removeEventListener('answer1', listener1);
         listenerOnAnswer1SideRemoved = true;
@@ -97,7 +107,7 @@ var ASTI = function (object) {
       socket.on('answer1', listener1);
     }
 
-    if (handlers.onAnswer2Side) {
+    if (handlers && handlers.onAnswer2Side) {
       listener2 = new eventListener(request.actionid, function (response) {
       socket.removeEventListener('answer2', listener2);
         listenerOnAnswer2SideRemoved = true;
