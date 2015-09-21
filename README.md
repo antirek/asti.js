@@ -64,7 +64,7 @@ return: promise with then and catch functions
 
 `````javascript
 
-asti.connect()
+asti.setIdentity({identity: 'vasya'}).connect()
 .then(function () {
     //do on connect
 })
