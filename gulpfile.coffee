@@ -3,7 +3,6 @@ concat = require 'gulp-concat'
 
 gulp.task 'default', ()->
   gulp.src [
-    './bower_components/fetch/fetch.js'
     './js/index.js'
     ]
   .pipe concat 'asti.js'

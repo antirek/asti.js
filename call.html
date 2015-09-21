@@ -14,10 +14,10 @@
       .connect()
       .then(function () {
         return asti.call({
-            channel: 'Local/6050@outbound1', 
+            channel: 'Local/6050@outbound1',
             context: 'outbound2',
             exten: '6000',
-            async: true
+            tracking: 'y8375687346587'      
           }, {
             onAnswer1Side: function (res) {
               alert('1 answer');
@@ -26,8 +26,8 @@
               alert('2 answer');
             }
           })
-          .then(function (response) {            
-            document.body.innerHTML = JSON.stringify(response);
+          .then(function (response) {
+            //document.body.innerHTML = JSON.stringify(response);
           });
       })
       .catch(function (err) {
