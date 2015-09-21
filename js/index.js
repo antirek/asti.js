@@ -19,27 +19,42 @@ var ASTI = function (object) {
     document.body.appendChild(script);
   };
 
-  var checkSocket = function () {
-    if (!socket) {
+  var checkSocket = function () {    
+    if (!socket.connected) {
       throw new Error('No socket.io connection');
     };
+  };
+
+  var setOnError = function (cb) {
+    socket.on('error', cb);
   };
 
   var connect = function () {
     return new Promise(function (resolve, reject) {
       if (!identity) { reject('no identity'); }
-      addScript(function () {
-        socket = io(url);
 
-        socket.on('error', function (data) {
-          console.log('error', data);
+      if (socket && socket.connected) { 
+        resolve(); 
+      } else {
+        addScript(function () {
+          socket = io(url);
+
+          setOnError(function (error) {
+              reject(error);
+          });
+
+          var connectListener = function () {
+            sessionid = 'session-' + actionid();
+            socket.emit('identity', {identity: identity, sessionid: sessionid});
+            resolve();
+          };
+
+          socket.on('connect', connectListener);
+          setTimeout(function () {
+            reject(new Error('No socket.io connection'));
+          },10000);
         });
-
-        sessionid = 'session-' + actionid();
-        socket.emit('identity', {identity: identity, sessionid: sessionid});
-
-        resolve();
-      });
+      }      
     });
   };
 
@@ -69,20 +84,33 @@ var ASTI = function (object) {
     checkSocket();
     if (!request) {var request = {};}
     request.actionid = actionid();
-    
-    var listener1 = new eventListener(request.actionid, function (response) {
-      socket.removeEventListener('answer1', listener1);
-      handlers.onAnswer1Side(response.data);
-    });
-    socket.on('answer1', listener1);
 
-    var listener2 = new eventListener(request.actionid, function (response) {
+    var listenerOnAnswer1SideRemoved = true, listenerOnAnswer2SideRemoved = true, listener1, listener2;
+
+    if (handlers.onAnswer1Side) {
+      listener1 = new eventListener(request.actionid, function (response) {
+        socket.removeEventListener('answer1', listener1);
+        listenerOnAnswer1SideRemoved = true;
+        handlers.onAnswer1Side(response.data);
+      });
+      listenerOnAnswer1SideRemoved = false;
+      socket.on('answer1', listener1);
+    }
+
+    if (handlers.onAnswer2Side) {
+      listener2 = new eventListener(request.actionid, function (response) {
       socket.removeEventListener('answer2', listener2);
-      handlers.onAnswer2Side(response.data);
-    });
-    socket.on('answer2', listener2);
+        listenerOnAnswer2SideRemoved = true;
+        handlers.onAnswer2Side(response.data);
+      });
+      listenerOnAnswer2SideRemoved = false;
+      socket.on('answer2', listener2);
+    }
 
-    //@todo - add timeout remove listeners
+    setTimeout(function () {
+      if (!listenerOnAnswer1SideRemoved) { socket.removeEventListener(listener1); }
+      if (!listenerOnAnswer2SideRemoved) { socket.removeEventListener(listener2); }
+    }, 120000);
 
     return new Promise(function (resolve, reject) {
       var listener = new eventListener(request.actionid, function (response) {        
@@ -91,7 +119,7 @@ var ASTI = function (object) {
       });
       socket.on('call', listener);
       socket.emit('call', request);
-      setTimeout(function() { reject ('call' + " timeout exceed")}, 10000);
+      setTimeout(function() { reject('call ' + actionid + ' timeout exceed'); }, 10000);
     });
 
   };
