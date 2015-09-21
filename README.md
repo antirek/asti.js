@@ -29,6 +29,31 @@ var asti = new ASTI({url:'http://localhost:10000'});
 `````
 
 
+
+#### asti.setIdentity(params)
+
+set identity for all request to asti
+
+params: 
+
+identity - identity string
+
+return: this
+
+`````javascript
+
+asti.setIdentity({identity: 'vasya'}).connect()
+.then(function () {
+    //do on connect
+})
+.catch(function () {
+    //do on error
+});
+
+`````
+
+
+
 #### asti.connect()
 
 Connect to ASTI server
@@ -154,3 +179,53 @@ asti.queue.members(queue: '1234')
 `````
 
 attention: member properties may be different by Asterisk version
+
+
+
+
+#### asti.call(params, handlers)
+
+originate call via asti
+
+params: 
+
+channel
+
+exten
+
+context
+
+variable
+
+tracking - tracking id for catch this call by http
+
+handlers: 
+
+onAnswer1Side
+
+onAnswer2Side
+
+
+return: promise
+
+
+`````javascript
+
+asti.call({
+    channel: 'Local/6050@outbound1',
+    context: 'outbound2',
+    exten: '6000',
+    tracking: 'y8375687346587'      
+}, {
+    onAnswer1Side: function (res) {
+        alert('1 answer');
+    },
+    onAnswer2Side: function (res) {
+        alert('2 answer');
+    }
+})
+.then(function (response) {
+    console.log(JSON.stringify(response));
+});
+
+`````
